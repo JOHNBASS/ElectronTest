@@ -20,3 +20,12 @@ cmd : npm install</br>
 cmd : npm start</br>
 出build</br>
 cmd : npm run build</br>
+</br>
+# Windows  x64</br>
+npm run build_win32</br>
+</br></br>
+# MAC OS X </br>
+npm run build_mac
+</br></br>
+# LINUX</br>
+npm run build_linux</br>
