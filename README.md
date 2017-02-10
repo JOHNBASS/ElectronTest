@@ -1,13 +1,22 @@
-install 套件
-cmd : npm i electron-prebuilt --save-dev
-
-package.json 改寫
-"scripts": {
-    "start": "electron ."
-}
-
-安裝套件
-cmd : npm init
-
-執行
-cmd : npm start
+install 套件  </br>
+cmd : npm i electron-prebuilt --save-dev  </br>
+</br>
+install 包成安裝檔套件 </br>
+cmd : npm i electron-packager --save-dev  </br>
+</br>
+install 包成安裝檔套件 </br>
+cmd : npm i asar --save-dev  </br>
+</br>
+package.json 改寫  </br>
+"scripts": {</br>
+    "start": "electron .",</br>
+    "build": "electron-packager . MyDesktopApp"</br>
+}</br>
+</br>
+安裝套件</br>
+cmd : npm install</br>
+</br>
+執行</br>
+cmd : npm start</br>
+出build</br>
+cmd : npm run build</br>
