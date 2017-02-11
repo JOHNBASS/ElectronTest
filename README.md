@@ -29,3 +29,5 @@ npm run build_mac
 </br></br>
 # LINUX</br>
 npm run build_linux</br>
+
+## rm -r <資料夾名> 要先刪除build出來的資料後才能rebuild
