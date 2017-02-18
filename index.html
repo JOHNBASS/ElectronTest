@@ -1,34 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
+
+<meta name="robots" content="noindex">
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>測試中文 hello</title>
-  </head>
-  <body>
 
-    <h1>測試中文 hello</h1>
-    <script>
-    require('./app.js')
-    </script>
-    <br>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron  <script>document.write(process.versions.electron)</script>.
-    <br>
-    <button onclick="myNotificationtest1()">myNotification</button>
-    <br>
-    <script>
-    function myNotificationtest1(id) {
-        alert("Ooops!");
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Smart Door App</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="https://webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
+  <script src="https://blockly.webduino.io/webduino-blockly.js"></script>
+  <script src="https://blockly.webduino.io/lib/firebase.js"></script>
+  <script src="https://blockly.webduino.io/lib/runtime.min.js"></script>
+  <script src='voicerss-tts.min.js'></script>
+</head>
 
-        let myNotification = new Notification('貼心小提醒', {
-          body: '記得帶上鑰匙關上門，天氣冷多加一件外套!'
-        })
+<body>
+<h3>設定你需要提醒的事項:</h3>
+<input id="Speakdata" value="喵喵喵叫，出門小心記得帶上鑰匙"></input>
 
-        myNotification.onclick = () => {
-          console.log('Notification clicked')
-        }
+<h3>光敏電阻的係數:</h3>
+<div id="demo-area-01-show"></div>
+
+
+<script id="jsbin-javascript">
+var speakdata;
+
+var photocell;
+var rgbled;
+var sw=0;
+
+
+
+boardReady({board: 'Smart', url: '172.20.10.5'}, function (board) {
+  board.systemReset();
+  board.samplingInterval = 50;
+  photocell = getPhotocell(board, 0);
+  rgbled = getRGBLedCathode(board, 15, 12, 13);
+  photocell.on(function(val){
+    photocell.detectedVal = val;
+    //alert(photocell.detectedVal);
+    document.getElementById("demo-area-01-show").innerHTML = photocell.detectedVal;
+    if (photocell.detectedVal > 0 && photocell.detectedVal <= 0.2) {
+        rgbled.setColor('#ff0000');
+
+    } else if (photocell.detectedVal > 0.2 && photocell.detectedVal <= 0.4) {
+      rgbled.setColor('#009900');
+    //Speak(speakdata, function() {});
+
+      if(sw ==0)
+      {
+            speakdata = document.getElementById("Speakdata").value
+            Speak(speakdata, function() {
+              sw=0;
+            });
+
+                let myNotification = new Notification('貼心小提醒', {
+                  body: speakdata
+                })
+
+                myNotification.onclick = () => {
+                  console.log('Notification clicked')
+                }
+      }
+      sw=1;
+
+
+    } else if (photocell.detectedVal > 0.4 && photocell.detectedVal <= 0.6) {
+      rgbled.setColor('#3333ff');
+      sw=0;
+    } else {
+      sw=0;
+      //rgbled.setColor('#000000');
+      rgbled.setColor('#ff00ff');
     }
-    </script>
-  </body>
-</html>
+  });
+});
+
+
+Speak('歡迎您來到Smart Door智慧開關門系統', function() {});
+
+
+
+
+function Speak(speakdata,callback)
+{
+        VoiceRSS.speech({
+            key: '6d45d7fb55e248bc8e172cb9b40e9b20',
+            src: speakdata,
+            hl: 'zh-tw',
+            r: 0, 
+            c: 'mp3',
+            f: '44khz_16bit_stereo',
+            ssml: false
+        });
+    // 如果 callback 存在的話就執行他
+    callback();
+}
+
+</script>
+
+</body>
+

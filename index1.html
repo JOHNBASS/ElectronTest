@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>測試中文 hello</title>
+  </head>
+  <body>
+
+    <h1>測試中文 hello</h1>
+    <script>
+    require('./app.js')
+    </script>
+    <br>
+    We are using node <script>document.write(process.versions.node)</script>,
+    Chrome <script>document.write(process.versions.chrome)</script>,
+    and Electron  <script>document.write(process.versions.electron)</script>.
+    <br>
+    <button onclick="myNotificationtest1()">myNotification</button>
+    <br>
+    <script>
+    function myNotificationtest1(id) {
+        alert("Ooops!");
+
+        let myNotification = new Notification('貼心小提醒', {
+          body: '記得帶上鑰匙關上門，天氣冷多加一件外套!'
+        })
+
+        myNotification.onclick = () => {
+          console.log('Notification clicked')
+        }
+    }
+    </script>
+  </body>
+</html>
