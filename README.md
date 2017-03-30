@@ -31,3 +31,5 @@ npm run build_mac
 npm run build_linux</br>
 
 ## rm -r <資料夾名> 要先刪除build出來的資料後才能rebuild
+
+rm -rf mydesktopapp-darwin-x64/

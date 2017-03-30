@@ -3,11 +3,13 @@
 <meta name="robots" content="noindex">
 <html>
 
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Smart Door App</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<!--   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
   <script src="https://webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
   <script src="https://blockly.webduino.io/webduino-blockly.js"></script>
   <script src="https://blockly.webduino.io/lib/firebase.js"></script>
@@ -21,9 +23,11 @@
 
 <h3>光敏電阻的係數:</h3>
 <div id="demo-area-01-show"></div>
-
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS22QrPeX_h6Ocm3HBASXj1TkGJH3giNKPgs1iD4XH4XUrEvAm1-g"></img>
 
 <script id="jsbin-javascript">
+
+
 var speakdata;
 
 var photocell;
@@ -31,9 +35,9 @@ var rgbled;
 var sw=0;
 
 
+boardReady({board: 'Smart', url: '172.20.10.5', multi: true}, function (board) {
 
-boardReady({board: 'Smart', url: '172.20.10.5'}, function (board) {
-  board.systemReset();
+  board.systemReset(); // 加入這行，裝置在第一次連線的時候，所有腳位輸出預設低電位 ( 0、off )
   board.samplingInterval = 50;
   photocell = getPhotocell(board, 0);
   rgbled = getRGBLedCathode(board, 15, 12, 13);
@@ -53,6 +57,7 @@ boardReady({board: 'Smart', url: '172.20.10.5'}, function (board) {
             speakdata = document.getElementById("Speakdata").value
             Speak(speakdata, function() {
               sw=0;
+              Invokpostdata(1,0);
             });
 
         let myNotification = new Notification('貼心小提醒', {
@@ -77,6 +82,10 @@ boardReady({board: 'Smart', url: '172.20.10.5'}, function (board) {
 });
 
 
+
+
+Invokpostdata(0,1);
+
 Speak('Smart Door948794狂 我的老天鵝鴨', function() {});
 
 
@@ -95,6 +104,72 @@ function Speak(speakdata,callback)
         });
     // 如果 callback 存在的話就執行他
     callback();
+}
+
+function Invokpostdata(isopen,isclose)
+{
+
+
+    $.get('https://smartdoor-88b17.firebaseio.com/users.json', function(response){
+
+        var rss = JSON.stringify(response);
+          //alert(rss);
+
+        });
+
+
+var now = new Date();
+
+   var data = {
+      "isopen": isopen,
+      "isclose": isclose,
+      "temperature": 1,
+      "timestamp": now,
+      "username": "從電腦家裡大門"
+      };
+
+            $.ajax({
+                url: "https://smartdoor-88b17.firebaseio.com/users.json",
+                type: "POST",
+                dataType: "JSON",
+                data: JSON.stringify(data),
+                timeout: 30000,
+                async: true,
+                crossDomain: true,
+                success: function(resault) {
+
+                    if (resault != null) {
+                        try {
+                            // console.log("Rename:");
+                            // console.log(resault);
+                        } catch (e) {};
+                    }
+                    if (resault != null && resault.RetrunCode == 0) {
+
+                        //success
+                        //var AvailableListdata = JSON.parse(resault.Resopnse);
+                        
+
+
+                    } else {
+                        //_err_code = (resault != null) ? resault.RetrunCode : "93002001"
+                        //that.addClass("editable");
+                        //that.focus();
+                        //alert(resault);
+                        //$editArea.find(".error span").html(L10N.error_msg[_err_code])
+
+                    }
+                },
+                error: function(jqXHR, b, c) {
+
+                    try {
+                        // error_handling(jqXHR.status, jqXHR.responseText);
+                        // console.log(jqXHR);
+                        alert(jqXHR);
+                    } catch (e) {};
+                }
+            });
+
 }
 
 </script>
